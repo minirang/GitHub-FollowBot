@@ -28,7 +28,9 @@ async function follow(username) {
             }
         });
         remaining = res.headers.get("x-ratelimit-remaining");
-        if (res.status === 204) console.log("Followed:", username);
+        if (res.status === 204) {
+            console.log("Followed:", username);
+        }
         else if (res.status === 404) console.log("User not found:", username);
         else if (res.status === 401) console.log("Invalid token");
         else if (res.status === 403) console.log("Rate limit hit");
@@ -73,10 +75,14 @@ async function followRandomUsers() {
         return;
     }
     console.log("Users found:", users.length);
-    for (const username of users) {
+    for (let i = 0; i < users.length; i++) {
+        const username = users[i];
         await follow(username);
-        // 너무 빨리 하면 정지먹음
-        await delay(25000 + Math.random() * 55000);
+        if (i < users.length - 1) {
+            const waitTime = 25000 + Math.random() * 55500;
+            console.log(`Waiting ${(waitTime / 1000).toFixed(1)} seconds for next follow...`);
+            await delay(waitTime);
+        }
     }
     console.log("Finished following users");
     console.log("Remaining requests:", remaining);
