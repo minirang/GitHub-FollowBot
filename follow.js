@@ -75,7 +75,8 @@ async function followRandomUsers() {
     console.log("Users found:", users.length);
     for (const username of users) {
         await follow(username);
-        await delay(1000 + Math.random() * 900);
+        // 너무 빨리 하면 정지먹음
+        await delay(12000 + Math.random() * 35000);
     }
     console.log("Finished following users");
     console.log("Remaining requests:", remaining);
