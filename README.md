@@ -9,4 +9,5 @@
 
 ### 주의사항
 
+- 반드시 node.js를 설치해야함 (https://nodejs.org/ko/download)
 - 한번 실행에 100명까지만 가능
