@@ -79,8 +79,8 @@ async function followRandomUsers() {
         const username = users[i];
         await follow(username);
         if (i < users.length - 1) {
-            const waitTime = 25000 + Math.random() * 55500;
-            console.log(`Waiting ${(waitTime / 1000).toFixed(1)} seconds for next follow...`);
+            const waitTime = 25000 + Math.random() * 60000;
+            console.log(`Waiting ${(waitTime / 1000).toFixed(1)} seconds for next follow...\n`);
             await delay(waitTime);
         }
     }
