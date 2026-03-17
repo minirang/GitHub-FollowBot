@@ -1,6 +1,7 @@
 console.log("SCRIPT START");
 const readline = require("readline");
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+let left = 0;
 let remaining;
 
 function askInput(question) {
@@ -78,9 +79,11 @@ async function followRandomUsers() {
     for (let i = 0; i < users.length; i++) {
         const username = users[i];
         await follow(username);
+        left += 1
         if (i < users.length - 1) {
             const waitTime = 25000 + Math.random() * 60000;
-            console.log(`Waiting ${(waitTime / 1000).toFixed(1)} seconds for next follow...\n`);
+            console.log(`Waiting ${(waitTime / 1000).toFixed(1)} seconds for next follow...`);
+            console.log(`${left} users followed\n`)
             await delay(waitTime);
         }
     }
