@@ -48,6 +48,7 @@ async function getRandomUsers() {
         const res = await fetch(
             `https://api.github.com/search/users?q=${randomLetter}&per_page=${people}&page=${page}`, {
                 headers: {
+                    Authorization: `token ${token}`,
                     Accept: "application/vnd.github+json",
                     "User-Agent": "node-follow-script"
                 }
