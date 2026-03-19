@@ -45,8 +45,9 @@ async function getRandomUsers() {
         const letters = "abcdefghijklmnopqrstuvwxyz";
         const randomLetter = letters[Math.floor(Math.random() * letters.length)];
         const page = Math.floor(Math.random() * 10) + 1;
+        const query = `${randomLetter} repos:>=3 followers:>=7`;
         const res = await fetch(
-            `https://api.github.com/search/users?q=${randomLetter}&per_page=${people}&page=${page}`, {
+            `https://api.github.com/search/users?q=${encodeURIComponent(query)}&per_page=${people}&page=${page}`, {
                 headers: {
                     Authorization: `token ${token}`,
                     Accept: "application/vnd.github+json",
