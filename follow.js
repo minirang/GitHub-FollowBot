@@ -81,7 +81,7 @@ async function followRandomUsers() {
         await follow(username);
         left += 1
         if (i < users.length - 1) {
-            const waitTime = 30000 + Math.random() * 65000;
+            const waitTime = 35000 + Math.pow(Math.random(), 2) * 85000;
             console.log(`Waiting ${(waitTime / 1000).toFixed(1)} seconds for next follow...`);
             if (left === 1) console.log(`${left} user followed\n`)
             else console.log(`${left} users followed\n`)
