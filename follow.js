@@ -10,6 +10,41 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 let left = 0;
 let remaining;
 
+function askHidden(question) {
+    return new Promise((resolve) => {
+        process.stdout.write(question);
+        let input = "";
+        process.stdin.setRawMode(true);
+        process.stdin.resume();
+        process.stdin.setEncoding("utf8");
+        function handler(chunk) {
+            chunk = String(chunk);
+            // Ctrl + C
+            if (chunk === "\u0003") process.exit();
+            if (chunk === "\r" || chunk === "\n") {
+                process.stdin.setRawMode(false);
+                process.stdin.removeListener("data", handler);
+                process.stdout.write("\n");
+                resolve(input);
+                return;
+            }
+            for (let ch of chunk) {
+                if (ch === "\r" || ch === "\n") continue;
+                // Backspace
+                if (ch === "\u0008" || ch === "\u007f") {
+                    input = input.slice(0, -1);
+                    process.stdout.clearLine(0);
+                    process.stdout.cursorTo(0);
+                    process.stdout.write(question + "*".repeat(input.length));
+                    continue;
+                }
+                input += ch;
+                process.stdout.write("*");
+            }
+        }
+        process.stdin.on("data", handler);
+    });
+}
 function askInput(question) {
     const rl = readline.createInterface({
         input: process.stdin,
@@ -29,13 +64,17 @@ async function follow(username) {
         const res = await fetch(`https://api.github.com/user/following/${username}`, {
             method: "PUT",
             headers: {
-                Authorization: `token ${token}`,
+                Authorization: `token ${token}`, // token 또는 Bearer
                 Accept: "application/vnd.github+json",
                 "User-Agent": "node-follow-script"
             }
         });
-        remaining = res.headers.get("x-ratelimit-remaining");
-        if (res.status === 204) {
+        remaining = Number(res.headers.get("x-ratelimit-remaining"));
+        if (remaining === 0) {
+            console.log("Rate limit reached. Stopping...");
+            process.exit(0);
+        }
+        else if (res.status === 204) {
             console.log("Followed:", username);
         }
         else if (res.status === 404) console.log("User not found:", username);
@@ -123,7 +162,7 @@ async function followRandomUsers() {
     console.log("Remaining requests:", remaining);
 }
 async function start() {
-    token = await askInput("Enter GitHub token: ");
+    token = await askHidden("Enter GitHub token: ");
     const peopleInput = await askInput("Number of users to follow (1 ~ 100): ");
     people = parseInt(peopleInput) || 100;
     await followRandomUsers();
