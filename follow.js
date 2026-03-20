@@ -1,3 +1,9 @@
+// Node 18 버전 이하라면 단순히 node-fetch 설치만 해도 아래 코드가 알아서 불러옴
+const nodeMajor = Number(process.versions.node.split(".")[0]);
+if (nodeMajor < 18) {
+    global.fetch = (...args) =>
+        import("node-fetch").then(({ default: fetch }) => fetch(...args));
+}
 console.log("SCRIPT START");
 const readline = require("readline");
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -33,9 +39,32 @@ async function follow(username) {
             console.log("Followed:", username);
         }
         else if (res.status === 404) console.log("User not found:", username);
-        else if (res.status === 401) console.log("Invalid token");
-        else if (res.status === 403) console.log("Rate limit hit");
-        else console.log("Failed:", username, res.status);
+        else if (res.status === 401) {
+            console.log("Invalid token");
+            process.exit(1);
+        } else if (res.status === 403) {
+            let msg = "";
+            try {
+                const data = await res.json();
+                msg = data.message || "";
+            } catch (e) { }
+            console.log("403 Forbidden:", msg);
+            if (msg.includes("rate limit")) {
+                console.log("Reason: Primary rate limit exceeded");
+            }
+            else if (msg.includes("secondary") || msg.includes("abuse")) {
+                console.log("Reason: Secondary rate limit (abuse detection)");
+            }
+            else if (msg.includes("scope") || msg.includes("permission")) {
+                console.log("Reason: Missing token scope/permission");
+            }
+            else {
+                console.log("Reason: Unknown 403 block");
+            }
+            console.info("Script stopped due to 403");
+            process.exit(1);
+        }
+        else console.error("Failed:", username, res.status);
     } catch (err) {
         console.error("Network error while following", username, err);
     }
@@ -45,18 +74,18 @@ async function getRandomUsers() {
         const letters = "abcdefghijklmnopqrstuvwxyz";
         const randomLetter = letters[Math.floor(Math.random() * letters.length)];
         const page = Math.floor(Math.random() * 10) + 1;
-        const query = `${randomLetter} repos:>=3 followers:>=7`;
+        const query = `${randomLetter} repos:>=6 followers:>=40`;
         const res = await fetch(
             `https://api.github.com/search/users?q=${encodeURIComponent(query)}&per_page=${people}&page=${page}`, {
-                headers: {
-                    Authorization: `token ${token}`,
-                    Accept: "application/vnd.github+json",
-                    "User-Agent": "node-follow-script"
-                }
+            headers: {
+                Authorization: `token ${token}`,
+                Accept: "application/vnd.github+json",
+                "User-Agent": "node-follow-script"
             }
+        }
         );
         if (!res.ok) {
-            console.log("Search request failed:", res.status);
+            console.error("Search request failed:", res.status);
             return [];
         }
         const data = await res.json();
