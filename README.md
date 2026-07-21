@@ -1,4 +1,4 @@
-# gitHub-followbot
+# github-followbot
 
 ---
 
