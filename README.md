@@ -1,6 +1,6 @@
 # github-followbot
 
-
+---
 
 # IMPORTANT WARNING — READ BEFORE USING
 
