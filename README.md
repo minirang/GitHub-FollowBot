@@ -2,6 +2,36 @@
 
 ---
 
+# IMPORTANT WARNING — READ BEFORE USING
+
+> **This project is provided for educational and API-learning purposes only.**
+
+>
+
+> This repository contains code that can automatically follow multiple GitHub users.
+
+> **Using this project for mass-following, spam, or other abusive automation may violate GitHub's Terms of Service, Acceptable Use Policies, or anti-spam rules, and may result in account restrictions or suspension.**
+
+>
+
+> **Do NOT use this project to mass-follow users or artificially increase followers.**
+
+> You are solely responsible for how you use this code and for complying with GitHub's policies and rate limits.
+
+>
+
+> The author does **not** encourage or endorse spam, abusive automation, or attempts to manipulate GitHub's follower system.
+
+>
+
+> If your goal is to learn how to use the GitHub API, consider modifying the code to interact with **one explicitly specified user** rather than automatically searching for and following multiple users.
+
+>
+
+> **Please check GitHub's current policies before using the GitHub API with this project.**
+
+--
+
 # 사용법
 
 1. code ==> download zip
