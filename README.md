@@ -1,6 +1,6 @@
 # github-followbot
 
----
+
 
 # IMPORTANT WARNING — READ BEFORE USING
 
@@ -30,7 +30,7 @@
 
 > **Please check GitHub's current policies before using the GitHub API with this project.**
 
---
+---
 
 # 사용법
 
